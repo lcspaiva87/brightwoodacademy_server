@@ -14,11 +14,27 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique
-  name     String?
-  role     Role    @default(USER)
-  password String
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  password         String
+  name             String
+  role             String    @default("user")
+  status           String    @default("active")
+  lastLogin        DateTime?
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  sessions         Session[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 enum Role {
